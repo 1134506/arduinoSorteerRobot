@@ -37,11 +37,13 @@ void loop(void) {
 
   if (r > g && g > (b * 2)) {
     Serial.println("ik denk dat dit geel is");
-  } else if (r > (g * 1.5) && r > (b * 1.5)) {
+  } else if (r > (g * 4) && r > (b * 4)) {
     Serial.println("ik denk dat dit rood is");
-  } else if (g > (r * 1.5) && g > (b * 1.5)) {
+  } else if (g > (r * 1.5) && g > (b * 2)) {
     Serial.println("ik denk dat dit groen is");
-  } else if (b > (r * 1.5) && g > (r * 1.5)) {
+  } else if (b > (r * 1.5) && b > g) {
     Serial.println("ik denk dat dit blauw is");
+  } else if (r > 130 && g > 130 && b > 130) {
+    Serial.println("ik denk dat dit een onbekende kleur is");
   }
 }
