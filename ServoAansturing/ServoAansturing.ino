@@ -24,8 +24,8 @@ void setup()
  
 void loop()
 {
-    digitalWrite(4, LOW);
-    digitalWrite(7, LOW);
+    digitalWrite(4, HIGH);
+    digitalWrite(7, HIGH);
 
     analogWrite(5, 255);
     analogWrite(6, 255);
