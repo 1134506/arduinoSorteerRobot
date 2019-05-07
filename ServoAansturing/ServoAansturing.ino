@@ -31,10 +31,11 @@ void loop()
     analogWrite(6, 255);
      
 
-  for(servoAngle = 45; servoAngle > 0; servoAngle--){
-    servo.write(servoAngle);
-    delay(3);
-  }
+  servo.write(0);
+  delay(700);
+  servo.write(179);
+  delay(700);
+
 
  
 //hallo
