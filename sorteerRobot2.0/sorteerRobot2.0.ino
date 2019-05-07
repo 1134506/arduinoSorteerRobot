@@ -1,31 +1,33 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
 #include <Servo.h>
+#include <NewPing.h>
 
-/* Example code for the Adafruit TCS34725 breakout library */
+NewPing sonar(7,7,10);
+Servo servo1; // afvalservo
+Servo servo2; // kleurenservo
 
-/* Connect SCL    to analog 5
-   Connect SDA    to analog 4
-   Connect VDD    to 3.3V DC
-   Connect GROUND to common ground */
 
-/* Initialise with default values (int time = 2.4ms, gain = 1x) */
-// Adafruit_TCS34725 tcs = Adafruit_TCS34725();
+int currentState = 0;
+int previousState = 0;
 
-/* Initialise with specific int time and gain values */
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+int aantalRoden;
+int aantalGroenen;
+int aantalGelen;
 
 int servoPin1 = 10;
 int servoPin2 = 9;
 
-Servo servo1;
-Servo servo2;
-
-int servoAngle1 = 0;
-int servoAngle2 = 120;   // servo position in degrees
+int servoAngle1 = 0;  //Servo afvalbak
+int servoAngle2 = 120;   //Servo voor de kleuren
 
 String kleur = "onbekend";
 String input;
+
+// Adafruit_TCS34725 tcs = Adafruit_TCS34725();
+
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+
 
 void setup(void) {
   Serial.begin(9600);
@@ -45,23 +47,22 @@ void setup(void) {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
 
+  //Motor voor de sorteerband
   digitalWrite(4, LOW);
   digitalWrite(7, LOW);
 
   analogWrite(5, 255);
   analogWrite(6, 255);
-
-  // Now we're ready to get readings!
 }
 
 void loop(void) {
   uint16_t r, g, b, c, colorTemp, lux;
-
+  
   tcs.getRawData(&r, &g, &b, &c);
   // colorTemp = tcs.calculateColorTemperature(r, g, b);
   colorTemp = tcs.calculateColorTemperature_dn40(r, g, b, c);
   lux = tcs.calculateLux(r, g, b);
-
+  
   if (r > (b * 3) && g > (b * 2.5)) {
     kleur = "geel";
   } else if (r > (g * 4) && r > (b * 4)) {
@@ -74,15 +75,7 @@ void loop(void) {
 
   if (kleur == "geel") {
     servoGoed();
-  } else if (kleur == "rood") {
-    servoGoed();
-  } else if (kleur == "groen") {
-    servoGoed();
-  } else if (kleur == "onbekend") {
-    servoFout();
-  }
-
-  while (kleur == "geel") {
+    while (kleur == "geel") {
     servoGeel();
     if (Serial.available() > 0) {
       input = Serial.readString();
@@ -92,8 +85,9 @@ void loop(void) {
       input = "";
     }
   }
-
-  while (kleur == "rood") {
+  } else if (kleur == "rood") {
+    servoGoed();
+    while (kleur == "rood") {
     servoRood();
     if (Serial.available() > 0) {
       input = Serial.readString();
@@ -103,8 +97,9 @@ void loop(void) {
       input = "";
     }
   }
-
-  while (kleur == "groen") {
+  } else if (kleur == "groen") {
+    servoGoed();
+    while (kleur == "groen") {
     servoGroen();
     if (Serial.available() > 0) {
       input = Serial.readString();
@@ -114,6 +109,27 @@ void loop(void) {
       input = "";
     }
   }
+  } else if (kleur == "onbekend") {
+    servoFout();
+  }
+
+  //wanneer de afstand tussen de 7 en 0 cm is dan wordt de currentstate op 1 gezet 
+  if(sonar.ping_cm() <= 7 && sonar.ping_cm() > 0){
+    currentState = 1;
+  //wanneer de afstand anders is wordt de currentstate op 0 gezet
+  }else{
+    currentState = 0;
+  }
+
+  //wanneer de currentstate 1 is en de previousstate 0 is dan wordt er 1 geteld
+  if(currentState == 1 && previousState == 0){
+    input = "geteld";
+    delay(5000);
+  }
+  //de previousstate wordt op de currentstate gezet
+  previousState = currentState;
+  
+  Serial.println(aantalDozen);
 }
 
 void servoFout() {
