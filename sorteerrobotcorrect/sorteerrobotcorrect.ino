@@ -37,17 +37,23 @@ void setup() {
   pinMode(4, OUTPUT); // motor aanzetten
   pinMode(5, OUTPUT); // snelheid motor
 
-  digitalWrite(4, LOW);
-  analogWrite(5, 255);
 }
 
 //--------------BEGIN LOOP---------------
 void loop() {
+
   waardeLDR = analogRead(LDRPin);
   Serial.println(waardeLDR);
 
   if (Serial.available() > 0) {
     mijnString = Serial.readString();
+    Serial.println(mijnString);
+    if (mijnString.equals("start")) {
+      digitalWrite(4, LOW);
+      analogWrite(5, 255);
+    } else if (mijnString.equals("stop")) {
+      analogWrite(5, 0);
+    }
   }
 
   getKleur = getValue(mijnString, ':', 0);
@@ -78,18 +84,21 @@ void loop() {
   if (huidigeStatus == 1 && vorigeStatus == 0) {
     if (getKleur.equals("rood")) {
       aantalRodeBlokjes++;
-      if(aantalRodeBlokjes >= getAantalInt){
+      if (aantalRodeBlokjes >= getAantalInt) {
         servoFout();
+        Serial.println("nextorder");
       }
     } else if (getKleur.equals("geel") && aantalGeleBlokjes <= getAantalInt) {
       aantalGeleBlokjes++;
-      if(aantalGeleBlokjes >= getAantalInt){
+      if (aantalGeleBlokjes >= getAantalInt) {
         servoFout();
+        Serial.println("nextorder");
       }
     } else if (getKleur.equals("groen") && aantalGroeneBlokjes <= getAantalInt) {
       aantalGroeneBlokjes++;
-      if(aantalGroeneBlokjes >= getAantalInt){
+      if (aantalGroeneBlokjes >= getAantalInt) {
         servoFout();
+        Serial.println("nextorder");
       }
     }
   }
