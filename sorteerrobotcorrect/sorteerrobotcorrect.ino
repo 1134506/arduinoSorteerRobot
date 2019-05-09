@@ -43,7 +43,6 @@ void setup() {
 void loop() {
 
   waardeLDR = analogRead(LDRPin);
-  Serial.println(waardeLDR);
 
   if (Serial.available() > 0) {
     mijnString = Serial.readString();
@@ -86,26 +85,27 @@ void loop() {
       aantalRodeBlokjes++;
       if (aantalRodeBlokjes >= getAantalInt) {
         servoFout();
-        Serial.println("nextorder");
+        Serial.println("n");
+        getKleur = "";
       }
-    } else if (getKleur.equals("geel") && aantalGeleBlokjes <= getAantalInt) {
+    } else if (getKleur.equals("geel")) {
       aantalGeleBlokjes++;
       if (aantalGeleBlokjes >= getAantalInt) {
         servoFout();
-        Serial.println("nextorder");
+        Serial.println("n");
+        getKleur = "";
       }
-    } else if (getKleur.equals("groen") && aantalGroeneBlokjes <= getAantalInt) {
+    }
+    else if (getKleur.equals("groen")) {
       aantalGroeneBlokjes++;
       if (aantalGroeneBlokjes >= getAantalInt) {
         servoFout();
-        Serial.println("nextorder");
+        Serial.println("n");
+        getKleur = "";
       }
     }
   }
   vorigeStatus = huidigeStatus; //de vorigeStatus wordt op de huidigeStatus gezet
-
-  Serial.println(aantalRodeBlokjes);
-  Serial.println(getAantalInt);
 
 }
 //-------------EINDE LOOP--------------------
