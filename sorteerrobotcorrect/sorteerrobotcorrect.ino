@@ -1,4 +1,5 @@
 #include <Servo.h>
+#include "Adafruit_TCS34725.h"
 
 Servo servo1; //afval servo
 Servo servo2; //kleuren servo
@@ -10,6 +11,8 @@ int vorigeStatus = 0;
 String mijnString;
 String getKleur;
 String getAantal;
+
+String kleurKleurenSensor;
 
 int aantalRodeBlokjes;
 int aantalGroeneBlokjes;
@@ -25,9 +28,18 @@ int servoPin2 = 9;
 int servoAngle1 = 0; // begin hoek afvalservo
 int servoAngle2 = 120; // begin hoek kleurenservo
 
+//initaliseren van de kleur sensor
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+
+  if (tcs.begin()) {
+  } else {
+    while (1);
+  }
+
 
   servo1.attach(servoPin1);
   servo2.attach(servoPin2);
@@ -41,7 +53,7 @@ void setup() {
 
 //--------------BEGIN LOOP---------------
 void loop() {
-
+  uint16_t r, g, b, c, colorTemp, lux;
   waardeLDR = analogRead(LDRPin);
 
   if (Serial.available() > 0) {
@@ -60,16 +72,29 @@ void loop() {
 
   int getAantalInt = getAantal.toInt();
 
-  if (getKleur.equals("rood") && aantalRodeBlokjes < getAantalInt) {
+  tcs.getRawData(&r, &g, &b, &c);
+
+  if (r > (b * 3) && g > (b * 2.5)) {
+    kleurKleurenSensor = "geel"; // 3 is geel
+    Serial.println("geel");
+  } else if (r > (g * 4) && r > (b * 4)) {
+    kleurKleurenSensor = "rood";  // 1 is rood
+  } else if (g > r && g > (b * 2)) {
+    kleurKleurenSensor = "groen"; // 2 is groen
+  } else if (r > 130 && g > 130 && b > 130) {
+    kleurKleurenSensor = "onbekend"; // 0 is afval
+  }
+
+  if (getKleur.equals("rood") && getKleur.equals(kleurKleurenSensor) && aantalRodeBlokjes < getAantalInt) {
     servoGoed();
     servoRood();
-  } else if (getKleur.equals("geel") && aantalGeleBlokjes < getAantalInt) {
+  } else if (getKleur.equals("geel") && getKleur.equals(kleurKleurenSensor) && aantalGeleBlokjes < getAantalInt) {
     servoGoed();
     servoGeel();
-  } else if (getKleur.equals("groen") && aantalGroeneBlokjes < getAantalInt) {
+  } else if (getKleur.equals("groen") && getKleur.equals(kleurKleurenSensor) && aantalGroeneBlokjes < getAantalInt) {
     servoGoed();
     servoGroen();
-  } else if (getKleur.equals("onbekend")) {
+  } else {
     servoFout();
   }
 
@@ -138,15 +163,12 @@ void servoRood() {
 }
 
 void servoGeel() {
-  for (servoAngle1 = 65; servoAngle1 < 105; servoAngle1++) {
-    servo2.write(servoAngle1);
+  for(int servoAngle = 100; servoAngle > 75; servoAngle--){
+    servo2.write(servoAngle);
     delay(5);
   }
 }
 
 void servoGroen() {
-  for (servoAngle1 = 60; servoAngle1 > 20; servoAngle1--) {
-    servo2.write(servoAngle1);
-    delay(5);
-  }
+  servo2.write(40);
 }
