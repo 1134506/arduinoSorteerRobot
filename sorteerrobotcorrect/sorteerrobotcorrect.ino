@@ -14,7 +14,7 @@ String getAantal;
 
 String kleurKleurenSensor;
 
-int aantalRodeBlokjes;
+int aantalRodeBlokjes = 0;
 int aantalGroeneBlokjes;
 int aantalGeleBlokjes;
 
@@ -76,7 +76,7 @@ void loop() {
 
   if (r > (b * 3) && g > (b * 2.5)) {
     kleurKleurenSensor = "geel"; // 3 is geel
-    Serial.println("geel");
+    Serial.println("xgeel");
   } else if (r > (g * 4) && r > (b * 4)) {
     kleurKleurenSensor = "rood";  // 1 is rood
   } else if (g > r && g > (b * 2)) {
