@@ -7,7 +7,6 @@ int LDRPin = A0;
 int huidigeStatus = 0;
 int vorigeStatus = 0;
 
-
 boolean huidigeStatus1 = false;
 boolean vorigeStatus1 = false;
 
@@ -76,13 +75,13 @@ void loop() {
   if (getKleur.equals("rood") && mijnString.startsWith("z") && aantalRodeBlokjes < getAantalInt) {
     servoGoed();
     servoRood();
-  }else if (getKleur.equals("geel") && mijnString.startsWith("x") && aantalGeleBlokjes < getAantalInt) {
+  } else if (getKleur.equals("geel") && mijnString.startsWith("x") && aantalGeleBlokjes < getAantalInt) {
     servoGoed();
     servoGeel();
   } else if (getKleur.equals("groen") && mijnString.startsWith("y") && aantalGroeneBlokjes < getAantalInt) {
     servoGoed();
     servoGroen();
-  } else if(!mijnString.indexOf(getKleur) == 0){
+  } else if (!mijnString.indexOf(getKleur) == 0) {
     servoFout();
   }
 
@@ -96,6 +95,10 @@ void loop() {
   if (huidigeStatus == 1 && vorigeStatus == 0) {
     if (getKleur.equals("rood")) {
       aantalRodeBlokjes++;
+      Serial.println("qgeteld");
+      delay(30);
+      Serial.println("mrood");
+      delay(30);
       if (aantalRodeBlokjes >= getAantalInt) {
         servoFout();
         Serial.println("n");
@@ -104,6 +107,10 @@ void loop() {
       }
     } else if (getKleur.equals("geel")) {
       aantalGeleBlokjes++;
+      Serial.println("qgeteld");
+      delay(30);
+      Serial.println("pgeel");
+      delay(30);
       if (aantalGeleBlokjes >= getAantalInt) {
         servoFout();
         Serial.println("n");
@@ -113,6 +120,10 @@ void loop() {
     }
     else if (getKleur.equals("groen")) {
       aantalGroeneBlokjes++;
+      Serial.println("qgeteld");
+      delay(30);
+      Serial.println("lgroen");
+      delay(30);
       if (aantalGroeneBlokjes >= getAantalInt) {
         servoFout();
         Serial.println("n");
