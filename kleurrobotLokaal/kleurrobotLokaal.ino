@@ -38,10 +38,11 @@ void loop() {
   } else if (g > r && g > (b * 2)) {
     kleurKleurenSensor = "ygroen"; // 2 is groen
     Serial.println(kleurKleurenSensor);
-  } else if (r > 130 && g > 130 && b > 130) {
-    kleurKleurenSensor = "onbekend"; // 0 is afval
-    Serial.println(kleurKleurenSensor);
-  }
+} 
+//else if (r > 130 && g > 130 && b > 130) {
+//    kleurKleurenSensor = "onbekend"; // 0 is afval
+//    Serial.println(kleurKleurenSensor);
+//  }
 }
 
 String getValue(String data, char separator, int index)
