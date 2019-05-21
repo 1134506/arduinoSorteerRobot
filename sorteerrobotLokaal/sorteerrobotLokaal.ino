@@ -4,8 +4,7 @@ Servo servo1; //afval servo
 Servo servo2; //kleuren servo
 
 int LDRPin = A0; // analoge pin LDR
-
-int huidigeStatus = 0; 
+int huidigeStatus = 0;
 int vorigeStatus = 0;
 
 boolean huidigeStatus1 = false;
@@ -15,21 +14,16 @@ String mijnString; // string die binnenkomt op seriele monitor
 String getKleur; // string waar de kleur wordt opgeslagen
 String getAantal; // string waar het aantal van een orderwordt opgeslagen
 
-String kleurKleurenSensor; // kleur die de kleurensensor stuurt
-
 int getAantalInt; // integer waar het aantal van een order wordt opgeslagen
 
 int aantalRodeBlokjes = 0; // aantal getelde rode blokjes
 int aantalGroeneBlokjes = 0; // " groen "
 int aantalGeleBlokjes = 0; // " geel "
 
-int waardeLDR; // waarde die de LDR geeft 
+int waardeLDR; // waarde die de LDR geeft
 
 int servoPin1 = 10; // digitale pin waar de afval servo wordt aangesloten
-int servoPin2 = 9; // " kleuren servo " 
-
-int servoAngle1 = 0; // begin hoek afvalservo
-int servoAngle2 = 120; // begin hoek kleurenservo
+int servoPin2 = 9; // " kleuren servo "
 
 void setup() {
   // put your setup code here, to run once:
@@ -49,8 +43,8 @@ void setup() {
 void loop() {
   waardeLDR = analogRead(LDRPin); // constant uitlezen LDR
 
-// onderstaande if kijkt of er info op de seriele monitor aanwezig is
-  if (Serial.available() > 0) { 
+  // onderstaande if kijkt of er info op de seriele monitor aanwezig is
+  if (Serial.available() > 0) {
     mijnString = Serial.readString();
     Serial.println(mijnString);
     if (mijnString.equals("start")) { // bij start dan start de motor
@@ -74,16 +68,16 @@ void loop() {
   }
 
   int getAantalInt = getAantal.toInt(); // aantal wordt omgezet naar integer
-  
-  if (getKleur.equals("rood") && mijnString.startsWith("z") && aantalRodeBlokjes < getAantalInt)) { // de kleur van de order is rood, de kleur die de kleurensensor stuurt begint met z(rood) 
+
+  if (getKleur.equals("rood") && mijnString.startsWith("z") && aantalRodeBlokjes < getAantalInt) { // de kleur van de order is rood, de kleur die de kleurensensor stuurt begint met z(rood)
     // en het aantal getelde rode blokjes is kleiner dan het aantal in de order
     servoGoed(); // zet de afval servo zo dat hij het blokje door laat
     servoRood(); // zet de kleurenservo zo dat het blokje in het rode bakje komt
-  } else if ((getKleur.equals("geel") && mijnString.startsWith("x") && aantalGeleBlokjes < getAantalInt)) {// de kleur van de order is geel, de kleur die de kleurensensor stuurt begint met x(geel) 
+  } else if ((getKleur.equals("geel") && mijnString.startsWith("x") && aantalGeleBlokjes < getAantalInt)) {// de kleur van de order is geel, de kleur die de kleurensensor stuurt begint met x(geel)
     // en het aantal getelde gele blokjes is kleiner dan het aantal in de order
-    servoGoed(); 
+    servoGoed();
     servoGeel();
-  } else if ((getKleur.equals("groen") && mijnString.startsWith("y") && aantalGroeneBlokjes < getAantalInt)) {// de kleur van de order is groen, de kleur die de kleurensensor stuurt begint met y(groen) 
+  } else if ((getKleur.equals("groen") && mijnString.startsWith("y") && aantalGroeneBlokjes < getAantalInt)) {// de kleur van de order is groen, de kleur die de kleurensensor stuurt begint met y(groen)
     // en het aantal getelede groene blokjes is kleiner dan het aantal in de order
     servoGoed();
     servoGroen();
@@ -103,11 +97,11 @@ void loop() {
       aantalRodeBlokjes++; // weet dat hij er een bij het aantalRodeBlokjes moet optellen
       Serial.println("qgeteld"); // stuurt naar de applicatie dat hij geteld is
       delay(30);
-      Serial.println("mrood"); // stuurt mrood naar de applicatie, zodat er bij rood 1 opgeteld kan worden 
+      Serial.println("mrood"); // stuurt mrood naar de applicatie, zodat er bij rood 1 opgeteld kan worden
       delay(30);
       if (aantalRodeBlokjes >= getAantalInt) { // wanneer het aantal geteld is wat er in de order zit komt hij hier in
         servoFout(); // servo wordt zo gezet dat alles wat er nog langs komt in het afvalbakje wordt gegooid
-        Serial.println("k"); // wordt geprint naar de applicatie, zodat de volgende order ingeladen kan worden. 
+        Serial.println("k"); // wordt geprint naar de applicatie, zodat de volgende order ingeladen kan worden.
         huidigeStatus1 = true; // wordt op true gezet zodat arduino weet dat er een order is binnengekomen
         getKleur = ""; // get kleur wordt leeggehaald
       } // VOOR ONDERSTAANDE CODE GELDT HETZELFDE ALS HIERBOVEN BESCHREVEN MAAR DAN MET ANDERE KLEUR
@@ -172,9 +166,9 @@ void servoRood() {
 }
 
 void servoGeel() {
-  servo2.write(97);
+  servo2.write(40);
 }
 
 void servoGroen() {
-  servo2.write(40);
+  servo2.write(97);
 }
